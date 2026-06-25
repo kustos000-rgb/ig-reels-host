@@ -1,0 +1,5 @@
+google-api-python-client>=2.100.0
+google-auth-oauthlib>=1.2.0
+google-auth>=2.30.0
+# Optional: only needed if you enable USE_OPENAI=1 for LLM-generated SEO
+openai>=1.40.0
