@@ -1,0 +1,8 @@
+client_secrets.json
+token.pickle
+*.pyc
+__pycache__/
+videos/*
+posted/*
+!videos/.gitkeep
+!posted/.gitkeep
