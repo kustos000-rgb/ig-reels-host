@@ -30,7 +30,12 @@ from google.auth.transport.requests import Request
 from seo import generate_seo
 
 # ================= CONFIG =================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+# Channel working directory. Falls back to the script's own folder when the
+# Windows path isn't present (e.g. when running elsewhere / on Linux).
+BASE_DIR = r"G:\yt shorts\Black Hole Files"
+if not os.path.isdir(BASE_DIR):
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 VIDEOS_DIR = os.path.join(BASE_DIR, "videos")
 POSTED_DIR = os.path.join(BASE_DIR, "posted")
 
@@ -87,10 +92,23 @@ def find_transcript(video_path):
 
 
 def list_pending_videos():
-    return sorted(
-        f for f in os.listdir(VIDEOS_DIR)
-        if f.lower().endswith(VIDEO_EXTS)
-    )
+    """Full paths of pending videos.
+
+    Looks in the `videos/` subfolder first, then directly in BASE_DIR so media
+    dropped straight into the channel folder is still picked up. The posted/
+    folder is skipped.
+    """
+    found = []
+    for directory in (VIDEOS_DIR, BASE_DIR):
+        if not os.path.isdir(directory):
+            continue
+        if os.path.abspath(directory) == os.path.abspath(POSTED_DIR):
+            continue
+        for f in sorted(os.listdir(directory)):
+            full = os.path.join(directory, f)
+            if os.path.isfile(full) and f.lower().endswith(VIDEO_EXTS):
+                found.append(full)
+    return found
 
 
 def move_posted(video_path):
@@ -136,8 +154,8 @@ def upload_video(youtube, video_path, seo):
     return response
 
 
-def process_video(youtube, video, dry_run=False):
-    video_path = os.path.join(VIDEOS_DIR, video)
+def process_video(youtube, video_path, dry_run=False):
+    video = os.path.basename(video_path)
     srt_path = find_transcript(video_path)
 
     if srt_path:
@@ -189,8 +207,8 @@ def main():
     if not args.dry_run:
         youtube = get_youtube()
 
-    for video in targets:
-        process_video(youtube, video, dry_run=args.dry_run)
+    for video_path in targets:
+        process_video(youtube, video_path, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":

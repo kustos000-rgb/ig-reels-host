@@ -30,7 +30,14 @@ moved into `posted/`.
    [Google Cloud Console](https://console.cloud.google.com/) with the
    **YouTube Data API v3** enabled, download it as `client_secrets.json`, and
    place it next to the script.
-3. Put your videos and their matching `.srt` files (same base name) in `videos/`.
+3. Put your videos and their matching `.srt` files (same base name) in the
+   channel folder — either directly in it or in a `videos/` subfolder.
+
+The script defaults its working folder to `G:\yt shorts\Black Hole Files`
+(set at the top of `upload_blackhole.py` as `BASE_DIR`). If that path doesn't
+exist it falls back to the folder the script lives in. So you can either keep
+the files at that Windows path, or just drop the scripts anywhere and run them
+from there.
 
 ## Usage
 
